@@ -1,0 +1,3 @@
+# Quebra de linha LF em todos os arquivos de texto, também no Windows:
+# scripts SQL e o compose são lidos dentro de contêineres Linux.
+* text=auto eol=lf
