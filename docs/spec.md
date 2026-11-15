@@ -105,17 +105,18 @@ Usado na resposta do POST e em cada item da listagem:
 ### Erros
 
 Todas as respostas de erro seguem o formato ProblemDetails (RFC 7807), com mensagens em português.
-A resposta lista todos os problemas encontrados, não só o primeiro. Cada erro diz o que falhou
-e, quando se aplica, qual produto, o estoque disponível e a quantidade solicitada.
+A resposta traz o primeiro problema encontrado. A mensagem diz o que falhou e, quando se aplica,
+qual produto, o estoque disponível e a quantidade solicitada.
 
 ## Front
 
-Três telas:
+Duas telas:
 
 - Listagem de pedidos, com filtro por cliente e período e paginação.
 - Criação de pedido: escolher o cliente, adicionar produtos com quantidade (mostrando preço e
   estoque) e enviar. Erros da API aparecem na tela com a mensagem recebida.
-- Relatório top clientes, com filtro de período.
+
+O relatório top clientes fica disponível só pela API.
 
 ## Carga inicial
 
@@ -132,12 +133,11 @@ Aplicada automaticamente ao subir, só quando o banco está vazio:
 - Pedido com cliente inexistente, sem itens, com produto repetido ou sem estoque é rejeitado com mensagem clara.
 - Quando o pedido é rejeitado, o estoque não muda.
 - Depois de um pedido criado, o estoque dos produtos diminui.
-- Dois pedidos simultâneos pela última unidade de um produto: só um é criado e o estoque termina em zero.
 - O valor total do pedido bate com a soma dos itens.
 - A listagem filtra por cliente e período e respeita a paginação.
 - Paginação ou período inválidos retornam 400.
 - O top clientes considera só pedidos do período e retorna no máximo 5.
-- No front é possível filtrar a listagem, criar um pedido e ver o top clientes.
+- No front é possível filtrar a listagem e criar um pedido.
 
 ## Restrições técnicas
 
