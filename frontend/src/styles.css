@@ -1,0 +1,257 @@
+:root {
+  --fundo: #f6f7f9;
+  --superficie: #ffffff;
+  --texto: #1c2330;
+  --texto-suave: #5b6676;
+  --borda: #d9dee6;
+  --destaque: #1f5fbf;
+  --destaque-escuro: #184c99;
+  --erro-fundo: #fdecec;
+  --erro-texto: #9b1c1c;
+  --sucesso-fundo: #e8f6ec;
+  --sucesso-texto: #17643a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 12px 24px;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borda);
+}
+
+.marca {
+  font-weight: 700;
+}
+
+.topo nav {
+  display: flex;
+  gap: 4px;
+}
+
+.topo a {
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--texto-suave);
+  text-decoration: none;
+}
+
+.topo a.active {
+  background: var(--fundo);
+  color: var(--destaque);
+  font-weight: 600;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-size: 22px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+label {
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+input,
+select {
+  padding: 7px 9px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+}
+
+button {
+  padding: 8px 14px;
+  border: 1px solid var(--destaque);
+  border-radius: 6px;
+  background: var(--destaque);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: var(--destaque-escuro);
+}
+
+button.secundario {
+  border-color: var(--borda);
+  background: var(--superficie);
+  color: var(--texto);
+}
+
+button.secundario:hover:not(:disabled) {
+  background: var(--fundo);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+.filtros select {
+  min-width: 260px;
+}
+
+.aviso {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+.aviso.erro {
+  background: var(--erro-fundo);
+  color: var(--erro-texto);
+}
+
+.aviso.sucesso {
+  background: var(--sucesso-fundo);
+  color: var(--sucesso-texto);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+th,
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--borda);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.numero {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.itens {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vazio {
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  color: var(--texto-suave);
+}
+
+.pedido {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+.pedido > .campo select {
+  min-width: 320px;
+}
+
+fieldset {
+  width: 100%;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+}
+
+legend {
+  padding: 0 6px;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.linha-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.linha-item .campo:first-child {
+  flex: 1 1 320px;
+}
+
+.linha-item input[type='number'] {
+  width: 110px;
+}
+
+.subtotal {
+  min-width: 110px;
+  padding-bottom: 8px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.total {
+  margin: 0;
+  font-size: 16px;
+}
