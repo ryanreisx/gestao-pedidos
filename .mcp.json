@@ -12,6 +12,16 @@
         "--dsn",
         "sqlserver://sa:${SA_PASSWORD:-GestaoPedidos123}@localhost:1433/GestaoPedidos?sslmode=disable"
       ]
+    },
+    "playwright": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@playwright/mcp@0.0.85",
+        "--isolated"
+      ]
     }
   }
 }
