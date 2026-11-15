@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "sqlserver": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@bytebase/dbhub@1.6.1",
+        "--transport",
+        "stdio",
+        "--dsn",
+        "sqlserver://sa:${SA_PASSWORD:-GestaoPedidos123}@localhost:1433/GestaoPedidos?sslmode=disable"
+      ]
+    }
+  }
+}
