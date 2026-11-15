@@ -24,7 +24,7 @@ Regra geral: cada etapa é pequena, termina com algo verificável e vira um comm
 | Inicialização do banco | Serviço `db-init` de execução única no compose, rodando os scripts de `database/` com `sqlcmd -b`; comando escrito no próprio compose | A imagem do SQL Server não executa scripts sozinha; sem arquivo `.sh` não há problema de quebra de linha do Windows |
 | MCP | DBHub (`@bytebase/dbhub`) via `npx`, em `.mcp.json`, com `cmd /c` (Windows) | Roda sem instalação e fala com SQL Server; o README explica a troca para Linux/macOS |
 
-Portas: SQL Server 1433, API 8080, front 3000.
+Portas no host: SQL Server 1433, API 5080 (8080 dentro do contêiner), front 3000.
 Senha do `sa`: valor de desenvolvimento com padrão no compose e no `.mcp.json` (`${SA_PASSWORD:-...}`),
 para subir sem passo manual.
 
@@ -98,7 +98,7 @@ não duplica dados.
    dependendo de `db-init` concluído.
 
 Pronto quando: `dotnet test` passa contra SQL Server real e `docker compose up` responde
-`GET /produtos` em `localhost:8080`.
+`GET /produtos` em `localhost:5080`.
 
 ## Etapa 4 — POST /pedidos
 
@@ -203,3 +203,4 @@ O que o autor ajustou ou recusou na revisão proposta pelo Claude:
 | Tela de top clientes no front | Recusada: o front fica com listagem e criação; o relatório existe só na API | O enunciado não exige essa tela |
 | Teste de integração com dois POSTs simultâneos pela última unidade | Recusada: sem teste de concorrência; o `UPDATE` condicional e a `CHECK` de estoque continuam | Mais simples; a garantia já está no banco |
 | Domínio acumulando todos os erros do pedido na resposta | Recusada: retorna o primeiro erro encontrado | Mais simples |
+| API publicada na porta 8080 do host | Alterada: porta 5080 no host, 8080 só dentro do contêiner | A 8080 é comum demais; na máquina do autor já estava ocupada por outro projeto |

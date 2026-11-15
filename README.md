@@ -5,7 +5,16 @@ Especificação em [docs/spec.md](docs/spec.md) e plano de implementação em [d
 
 ## Como rodar com Docker
 
-_A preencher._
+```bash
+docker compose up --build
+```
+
+| Serviço | Endereço |
+|---|---|
+| API | http://localhost:5080 |
+| SQL Server | localhost:1433 |
+
+_A completar com o front._
 
 ## Como rodar os testes
 

@@ -68,7 +68,7 @@ npm --prefix frontend run dev                         # front em desenvolvimento
 npm --prefix frontend run build                       # checagem de tipos + build
 ```
 
-Portas: SQL Server 1433, API 8080, front 3000.
+Portas no host: SQL Server 1433, API 5080 (8080 dentro do contêiner), front 3000.
 
 ## Ferramentas do Claude neste repositório
 
