@@ -11,10 +11,9 @@ docker compose up --build
 
 | Serviço | Endereço |
 |---|---|
+| Front | http://localhost:3000 |
 | API | http://localhost:5080 |
 | SQL Server | localhost:1433 |
-
-_A completar com o front._
 
 ## Como rodar os testes
 
