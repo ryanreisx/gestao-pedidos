@@ -58,7 +58,7 @@ Paginação: page (padrão 1), pageSize (padrão 10, máximo 50)
 Retorna a página e o total de registros, do mais recente para o mais antigo:
 `{ "itens": [ ...pedidos ], "page": 1, "pageSize": 10, "total": 42 }`
 
-- 400: page menor que 1, pageSize fora de 1 a 50, data em formato inválido ou dataInicio maior que dataFim
+- 400: page menor que 1, page grande demais, pageSize fora de 1 a 50, data em formato inválido ou dataInicio maior que dataFim
 
 ### GET /relatorios/top-clientes
 
@@ -97,7 +97,7 @@ Usado na resposta do POST e em cada item da listagem:
 
 ### Período (dataInicio e dataFim)
 
-- Formato `yyyy-MM-dd`.
+- O formato esperado é `yyyy-MM-dd` (ex.: `2026-03-10`). Outros formatos não são garantidos.
 - Os dois extremos são inclusivos: o dia inteiro de dataInicio e o dia inteiro de dataFim entram no resultado.
 - Os dias são delimitados em UTC.
 - Cada um pode ser informado sozinho (só a partir de, ou só até).
