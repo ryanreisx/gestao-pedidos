@@ -50,10 +50,10 @@ public class ApiFixture : IAsyncLifetime
 
     // Cada teste cria os próprios dados, com nomes únicos, e não depende da carga inicial.
 
-    public async Task<Cliente> CriarCliente()
+    public async Task<Cliente> CriarCliente(string? nome = null)
     {
         var id = Guid.NewGuid().ToString("N");
-        var cliente = new Cliente { Nome = $"Cliente {id}", Email = $"{id}@teste.com", DataCadastro = DateTime.UtcNow };
+        var cliente = new Cliente { Nome = nome ?? $"Cliente {id}", Email = $"{id}@teste.com", DataCadastro = DateTime.UtcNow };
         await using var db = CriarDbContext();
         db.Clientes.Add(cliente);
         await db.SaveChangesAsync();
