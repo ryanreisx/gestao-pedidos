@@ -48,6 +48,45 @@ public class ApiFixture : IAsyncLifetime
     public AppDbContext CriarDbContext() =>
         new(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(_connectionString).Options);
 
+    // Cada teste cria os próprios dados, com nomes únicos, e não depende da carga inicial.
+
+    public async Task<Cliente> CriarCliente()
+    {
+        var id = Guid.NewGuid().ToString("N");
+        var cliente = new Cliente { Nome = $"Cliente {id}", Email = $"{id}@teste.com", DataCadastro = DateTime.UtcNow };
+        await using var db = CriarDbContext();
+        db.Clientes.Add(cliente);
+        await db.SaveChangesAsync();
+        return cliente;
+    }
+
+    public async Task<Produto> CriarProduto(int estoque, decimal preco = 10.00m)
+    {
+        var produto = new Produto { Nome = $"Produto {Guid.NewGuid():N}", Preco = preco, Estoque = estoque };
+        await using var db = CriarDbContext();
+        db.Produtos.Add(produto);
+        await db.SaveChangesAsync();
+        return produto;
+    }
+
+    // Grava um pedido direto no banco, com data fixa, sem passar pelo POST.
+    public async Task<Pedido> CriarPedido(int clienteId, DateTime data, params (Produto Produto, int Quantidade)[] itens)
+    {
+        var pedido = new Pedido
+        {
+            ClienteId = clienteId,
+            DataPedido = data,
+            Itens = itens
+                .Select(i => new ItemPedido { ProdutoId = i.Produto.Id, Quantidade = i.Quantidade, PrecoUnitario = i.Produto.Preco })
+                .ToList()
+        };
+        pedido.ValorTotal = pedido.Itens.Sum(i => i.Quantidade * i.PrecoUnitario);
+        await using var db = CriarDbContext();
+        db.Pedidos.Add(pedido);
+        await db.SaveChangesAsync();
+        return pedido;
+    }
+
     private static string CaminhoDoSchema()
     {
         var pasta = new DirectoryInfo(AppContext.BaseDirectory);

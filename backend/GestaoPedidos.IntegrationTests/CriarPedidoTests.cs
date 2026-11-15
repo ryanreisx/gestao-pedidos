@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using GestaoPedidos.Api.Dados;
 using GestaoPedidos.Api.Endpoints;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +15,9 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_Valido_Retorna201ComPedidoNoFormatoDaSpec()
     {
-        var cliente = await CriarCliente();
-        var teclado = await CriarProduto(preco: 50.00m, estoque: 10);
-        var mouse = await CriarProduto(preco: 19.90m, estoque: 10);
+        var cliente = await api.CriarCliente();
+        var teclado = await api.CriarProduto(preco: 50.00m, estoque: 10);
+        var mouse = await api.CriarProduto(preco: 19.90m, estoque: 10);
         var antes = DateTime.UtcNow;
 
         var resposta = await Post(new
@@ -52,9 +51,9 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_Valido_GravaPedidoEBaixaEstoque()
     {
-        var cliente = await CriarCliente();
-        var teclado = await CriarProduto(preco: 50.00m, estoque: 10);
-        var mouse = await CriarProduto(preco: 19.90m, estoque: 5);
+        var cliente = await api.CriarCliente();
+        var teclado = await api.CriarProduto(preco: 50.00m, estoque: 10);
+        var mouse = await api.CriarProduto(preco: 19.90m, estoque: 5);
 
         var resposta = await Post(new
         {
@@ -83,7 +82,7 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_SemItens_Retorna400()
     {
-        var cliente = await CriarCliente();
+        var cliente = await api.CriarCliente();
 
         var resposta = await Post(new { clienteId = cliente.Id, itens = Array.Empty<object>() });
 
@@ -93,7 +92,7 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_SemCampoItens_Retorna400()
     {
-        var cliente = await CriarCliente();
+        var cliente = await api.CriarCliente();
 
         var resposta = await Post(new { clienteId = cliente.Id });
 
@@ -103,7 +102,7 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_SemClienteId_Retorna400()
     {
-        var produto = await CriarProduto(estoque: 10);
+        var produto = await api.CriarProduto(estoque: 10);
 
         var resposta = await Post(new { itens = new[] { new { produtoId = produto.Id, quantidade = 1 } } });
 
@@ -113,8 +112,8 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_QuantidadeZero_Retorna400ENaoAlteraEstoque()
     {
-        var cliente = await CriarCliente();
-        var produto = await CriarProduto(estoque: 10);
+        var cliente = await api.CriarCliente();
+        var produto = await api.CriarProduto(estoque: 10);
 
         var resposta = await Post(new
         {
@@ -130,8 +129,8 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_ProdutoRepetido_Retorna400ENaoAlteraEstoque()
     {
-        var cliente = await CriarCliente();
-        var produto = await CriarProduto(estoque: 10);
+        var cliente = await api.CriarCliente();
+        var produto = await api.CriarProduto(estoque: 10);
 
         var resposta = await Post(new
         {
@@ -163,7 +162,7 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_ClienteInexistente_Retorna422ENaoAlteraEstoque()
     {
-        var produto = await CriarProduto(estoque: 10);
+        var produto = await api.CriarProduto(estoque: 10);
 
         var resposta = await Post(new
         {
@@ -178,7 +177,7 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_ProdutoInexistente_Retorna422()
     {
-        var cliente = await CriarCliente();
+        var cliente = await api.CriarCliente();
 
         var resposta = await Post(new
         {
@@ -192,8 +191,8 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_EstoqueInsuficiente_Retorna422ComDisponivelESolicitado()
     {
-        var cliente = await CriarCliente();
-        var produto = await CriarProduto(estoque: 2);
+        var cliente = await api.CriarCliente();
+        var produto = await api.CriarProduto(estoque: 2);
 
         var resposta = await Post(new
         {
@@ -208,9 +207,9 @@ public class CriarPedidoTests(ApiFixture api)
     [Fact]
     public async Task CriarPedido_UmItemSemEstoque_RejeitaOPedidoInteiroENaoAlteraEstoque()
     {
-        var cliente = await CriarCliente();
-        var comEstoque = await CriarProduto(estoque: 10);
-        var semEstoque = await CriarProduto(estoque: 0);
+        var cliente = await api.CriarCliente();
+        var comEstoque = await api.CriarProduto(estoque: 10);
+        var semEstoque = await api.CriarProduto(estoque: 0);
 
         var resposta = await Post(new
         {
@@ -240,25 +239,6 @@ public class CriarPedidoTests(ApiFixture api)
         Assert.Equal("application/problem+json", resposta.Content.Headers.ContentType?.MediaType);
         var problema = await resposta.Content.ReadFromJsonAsync<JsonElement>();
         Assert.Equal(mensagem, problema.GetProperty("detail").GetString());
-    }
-
-    private async Task<Cliente> CriarCliente()
-    {
-        var id = Guid.NewGuid().ToString("N");
-        var cliente = new Cliente { Nome = $"Cliente {id}", Email = $"{id}@teste.com", DataCadastro = DateTime.UtcNow };
-        await using var db = api.CriarDbContext();
-        db.Clientes.Add(cliente);
-        await db.SaveChangesAsync();
-        return cliente;
-    }
-
-    private async Task<Produto> CriarProduto(int estoque, decimal preco = 10.00m)
-    {
-        var produto = new Produto { Nome = $"Produto {Guid.NewGuid():N}", Preco = preco, Estoque = estoque };
-        await using var db = api.CriarDbContext();
-        db.Produtos.Add(produto);
-        await db.SaveChangesAsync();
-        return produto;
     }
 
     private async Task<int> Estoque(int produtoId)
