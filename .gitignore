@@ -1,0 +1,23 @@
+# .NET
+bin/
+obj/
+*.user
+TestResults/
+
+# Visual Studio
+.vs/
+
+# Node
+node_modules/
+dist/
+
+# Playwright
+playwright-report/
+test-results/
+
+# Ambiente
+.env
+.env.local
+
+# Claude Code (configuração pessoal)
+.claude/settings.local.json
