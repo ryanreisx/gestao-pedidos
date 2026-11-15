@@ -122,7 +122,7 @@ public class CriarPedidoTests(ApiFixture api)
         });
 
         await AssertProblema(resposta, HttpStatusCode.BadRequest,
-            $"A quantidade do produto {produto.Id} deve ser maior que zero.");
+            "A quantidade do item 1 deve ser maior que zero.");
         Assert.Equal(10, await Estoque(produto.Id));
     }
 
@@ -143,7 +143,7 @@ public class CriarPedidoTests(ApiFixture api)
         });
 
         await AssertProblema(resposta, HttpStatusCode.BadRequest,
-            $"O produto {produto.Id} aparece em mais de um item.");
+            "O item 2 repete um produto que já está no pedido.");
         Assert.Equal(10, await Estoque(produto.Id));
     }
 
@@ -201,7 +201,7 @@ public class CriarPedidoTests(ApiFixture api)
         });
 
         await AssertProblema(resposta, HttpStatusCode.UnprocessableEntity,
-            $"Estoque insuficiente para o produto {produto.Id} ({produto.Nome}): disponível 2, solicitado 3.");
+            $"Estoque insuficiente para o produto {produto.Nome}: disponível 2, solicitado 3.");
     }
 
     [Fact]

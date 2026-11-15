@@ -58,7 +58,7 @@ public class CriacaoDePedidoTests
     {
         var erro = CriacaoDePedido.ValidarEntrada(1, [new(0, 3)]);
 
-        Assert.Equal("produtoId é obrigatório em todos os itens.", erro);
+        Assert.Equal("Selecione o produto do item 1.", erro);
     }
 
     [Theory]
@@ -68,7 +68,7 @@ public class CriacaoDePedidoTests
     {
         var erro = CriacaoDePedido.ValidarEntrada(1, [new(2, quantidade)]);
 
-        Assert.Equal("A quantidade do produto 2 deve ser maior que zero.", erro);
+        Assert.Equal("A quantidade do item 1 deve ser maior que zero.", erro);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class CriacaoDePedidoTests
     {
         var erro = CriacaoDePedido.ValidarEntrada(1, [new(2, 1), new(3, 1), new(2, 4)]);
 
-        Assert.Equal("O produto 2 aparece em mais de um item.", erro);
+        Assert.Equal("O item 3 repete um produto que já está no pedido.", erro);
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class CriacaoDePedidoTests
 
         Assert.Null(resultado.Pedido);
         Assert.Equal(
-            "Estoque insuficiente para o produto 2 (Teclado): disponível 4, solicitado 5.",
+            "Estoque insuficiente para o produto Teclado: disponível 4, solicitado 5.",
             resultado.Erro);
     }
 
@@ -125,7 +125,7 @@ public class CriacaoDePedidoTests
             1, Cliente, [new(2, 1), new(3, 1)], Produtos(Teclado(), Mouse(estoque: 0)), Agora);
 
         Assert.Null(resultado.Pedido);
-        Assert.Contains("Estoque insuficiente para o produto 3", resultado.Erro);
+        Assert.Contains("Estoque insuficiente para o produto Mouse", resultado.Erro);
     }
 
     [Fact]

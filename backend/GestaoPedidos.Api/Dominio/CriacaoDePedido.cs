@@ -19,17 +19,20 @@ public static class CriacaoDePedido
         if (itens is null || itens.Count == 0)
             return "O pedido precisa ter pelo menos 1 item.";
 
+        // As mensagens citam a posição do item (e não o id do produto), que é o que a tela mostra.
         var produtosVistos = new HashSet<int>();
-        foreach (var item in itens)
+        for (var posicao = 1; posicao <= itens.Count; posicao++)
         {
+            var item = itens[posicao - 1];
+
             if (item.ProdutoId <= 0)
-                return "produtoId é obrigatório em todos os itens.";
+                return $"Selecione o produto do item {posicao}.";
 
             if (item.Quantidade <= 0)
-                return $"A quantidade do produto {item.ProdutoId} deve ser maior que zero.";
+                return $"A quantidade do item {posicao} deve ser maior que zero.";
 
             if (!produtosVistos.Add(item.ProdutoId))
-                return $"O produto {item.ProdutoId} aparece em mais de um item.";
+                return $"O item {posicao} repete um produto que já está no pedido.";
         }
 
         return null;
@@ -55,7 +58,7 @@ public static class CriacaoDePedido
 
             if (produto.Estoque < item.Quantidade)
                 return new(null,
-                    $"Estoque insuficiente para o produto {produto.Id} ({produto.Nome}): " +
+                    $"Estoque insuficiente para o produto {produto.Nome}: " +
                     $"disponível {produto.Estoque}, solicitado {item.Quantidade}.");
 
             pedido.Itens.Add(new ItemPedido

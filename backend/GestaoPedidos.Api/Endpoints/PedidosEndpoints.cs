@@ -102,7 +102,7 @@ public static class PedidosEndpoints
                 await transacao.RollbackAsync();
                 var produto = produtos[item.ProdutoId];
                 return Results.Problem(
-                    detail: $"Estoque insuficiente para o produto {produto.Id} ({produto.Nome}).",
+                    detail: $"Estoque insuficiente para o produto {produto.Nome}.",
                     statusCode: StatusCodes.Status422UnprocessableEntity);
             }
         }
