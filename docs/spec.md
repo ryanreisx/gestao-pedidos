@@ -44,7 +44,7 @@ Estoque e Quantidade são inteiros. Datas são gravadas em UTC.
 Body: `{ "clienteId": 1, "itens": [ { "produtoId": 2, "quantidade": 3 } ] }`
 
 - 201: pedido criado; retorna o pedido no formato descrito em "Formato do pedido"
-- 400: sem clienteId, sem itens, quantidade inválida ou produto repetido
+- 400: sem clienteId, sem itens, item sem produtoId, quantidade inválida ou produto repetido
 - 422: cliente inexistente, produto inexistente ou estoque insuficiente
 
 Os erros 400 são verificados primeiro; o 422 só ocorre com um body bem formado.
