@@ -15,8 +15,9 @@ export function App() {
         </nav>
       </header>
       <main>
+        <ListaPedidos />
         <Routes>
-          <Route path="/" element={<ListaPedidos />} />
+          <Route path="/" element={null} />
           <Route path="/novo" element={<NovoPedido />} />
         </Routes>
       </main>

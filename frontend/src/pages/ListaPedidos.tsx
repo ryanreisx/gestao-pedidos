@@ -28,10 +28,7 @@ export function ListaPedidos() {
   const [mensagemDeSucesso, setMensagemDeSucesso] = useState<string | null>(
     () => (location.state as { mensagem?: string } | null)?.mensagem ?? null,
   );
-
-  useEffect(() => {
-    if (location.state) navegar(location.pathname, { replace: true, state: null });
-  }, [location, navegar]);
+  const [atualizacao, setAtualizacao] = useState(0);
 
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [formulario, setFormulario] = useState<Filtros>(SEM_FILTROS);
@@ -40,6 +37,16 @@ export function ListaPedidos() {
   const [pagina, setPagina] = useState<PaginaDePedidos | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(true);
+
+  useEffect(() => {
+    const estado = location.state as { mensagem?: string } | null;
+    if (estado?.mensagem) {
+      setMensagemDeSucesso(estado.mensagem);
+      setPage(1);
+      setAtualizacao((v) => v + 1);
+    }
+    if (location.state) navegar(location.pathname, { replace: true, state: null });
+  }, [location, navegar]);
 
   useEffect(() => {
     listarClientes()
@@ -74,7 +81,7 @@ export function ListaPedidos() {
     return () => {
       cancelado = true;
     };
-  }, [filtros, page]);
+  }, [filtros, page, atualizacao]);
 
   function aplicarFiltros(evento: FormEvent) {
     evento.preventDefault();
@@ -93,7 +100,7 @@ export function ListaPedidos() {
   const totalDePaginas = pagina ? Math.max(1, Math.ceil(pagina.total / pagina.pageSize)) : 1;
 
   return (
-    <section>
+    <section className="pagina-pedidos">
       <h1>Pedidos</h1>
 
       {mensagemDeSucesso && (
@@ -103,7 +110,7 @@ export function ListaPedidos() {
       )}
 
       <form className="filtros" onSubmit={aplicarFiltros}>
-        <div className="campo">
+        <div className="campo campo-cliente">
           <label htmlFor="filtro-cliente">Cliente</label>
           <select
             id="filtro-cliente"
@@ -118,7 +125,7 @@ export function ListaPedidos() {
             ))}
           </select>
         </div>
-        <div className="campo">
+        <div className="campo campo-data">
           <label htmlFor="filtro-data-inicio">Data inicial</label>
           <input
             id="filtro-data-inicio"
@@ -127,7 +134,7 @@ export function ListaPedidos() {
             onChange={(e) => setFormulario({ ...formulario, dataInicio: e.target.value })}
           />
         </div>
-        <div className="campo">
+        <div className="campo campo-data">
           <label htmlFor="filtro-data-fim">Data final</label>
           <input
             id="filtro-data-fim"
@@ -136,10 +143,12 @@ export function ListaPedidos() {
             onChange={(e) => setFormulario({ ...formulario, dataFim: e.target.value })}
           />
         </div>
-        <button type="submit">Filtrar</button>
-        <button type="button" className="secundario" onClick={limparFiltros}>
-          Limpar
-        </button>
+        <div className="acoes-filtro">
+          <button type="submit">Filtrar</button>
+          <button type="button" className="secundario" onClick={limparFiltros}>
+            Limpar
+          </button>
+        </div>
       </form>
 
       {erro && (
@@ -149,7 +158,7 @@ export function ListaPedidos() {
       )}
 
       {pagina && (
-        <>
+        <div className="painel-tabela">
           <table>
             <thead>
               <tr>
@@ -170,14 +179,16 @@ export function ListaPedidos() {
               )}
               {pagina.itens.map((pedido) => (
                 <tr key={pedido.id}>
-                  <td>#{pedido.id}</td>
-                  <td>{pedido.clienteNome}</td>
-                  <td>{dataHoraUtc(pedido.dataPedido)}</td>
+                  <td className="celula-id">#{pedido.id}</td>
+                  <td className="celula-cliente">{pedido.clienteNome}</td>
+                  <td className="celula-data">{dataHoraUtc(pedido.dataPedido)}</td>
                   <td>
                     <ul className="itens">
                       {pedido.itens.map((item) => (
                         <li key={item.produtoId}>
-                          {item.quantidade} × {item.produtoNome} ({moeda(item.precoUnitario)})
+                          <span className="item-qtd">{item.quantidade} ×</span>{' '}
+                          <span className="item-nome">{item.produtoNome}</span>{' '}
+                          <span className="item-preco">({moeda(item.precoUnitario)})</span>
                         </li>
                       ))}
                     </ul>
@@ -210,7 +221,7 @@ export function ListaPedidos() {
               Próxima
             </button>
           </nav>
-        </>
+        </div>
       )}
 
       {carregando && !pagina && <p>Carregando…</p>}

@@ -38,6 +38,14 @@ export function NovoPedido() {
       .catch((falha) => setErro(mensagemDeErro(falha)));
   }, []);
 
+  useEffect(() => {
+    function aoTeclar(evento: KeyboardEvent) {
+      if (evento.key === 'Escape' && !enviando) navegar('/');
+    }
+    window.addEventListener('keydown', aoTeclar);
+    return () => window.removeEventListener('keydown', aoTeclar);
+  }, [enviando, navegar]);
+
   const produtoDaLinha = (linha: LinhaDeItem) => produtos.find((p) => p.id === Number(linha.produtoId));
 
   const totalPrevisto = linhas.reduce((soma, linha) => {
@@ -76,96 +84,123 @@ export function NovoPedido() {
   }
 
   return (
-    <section>
-      <h1>Novo pedido</h1>
+    <div className="modal-overlay" onClick={() => !enviando && navegar('/')}>
+      <section
+        className="pagina-novo"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-novo-pedido"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="cartao-novo">
+          <div className="cabecalho-modal">
+            <h1 id="titulo-novo-pedido">Novo pedido</h1>
+            <button
+              type="button"
+              className="secundario botao-fechar-modal"
+              aria-label="Fechar"
+              disabled={enviando}
+              onClick={() => navegar('/')}
+            >
+              ×
+            </button>
+          </div>
 
-      <form className="pedido" onSubmit={enviar}>
-        <div className="campo">
-          <label htmlFor="pedido-cliente">Cliente</label>
-          <select
-            id="pedido-cliente"
-            value={clienteId}
-            onChange={(e) => {
-              setErro(null);
-              setClienteId(e.target.value);
-            }}
-          >
-            <option value="">Selecione…</option>
-            {clientes.map((cliente) => (
-              <option key={cliente.id} value={cliente.id}>
-                {cliente.nome} ({cliente.email})
-              </option>
-            ))}
-          </select>
-        </div>
+          <form className="pedido" onSubmit={enviar}>
+          <div className="campo campo-cliente-pedido">
+            <label htmlFor="pedido-cliente">Cliente</label>
+            <select
+              id="pedido-cliente"
+              value={clienteId}
+              onChange={(e) => {
+                setErro(null);
+                setClienteId(e.target.value);
+              }}
+            >
+              <option value="">Selecione…</option>
+              {clientes.map((cliente) => (
+                <option key={cliente.id} value={cliente.id}>
+                  {cliente.nome} ({cliente.email})
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <fieldset>
-          <legend>Itens</legend>
+          <fieldset className="secao-itens">
+            <legend>Itens</legend>
 
-          {linhas.length === 0 && <p className="vazio">Nenhum item.</p>}
+            {linhas.length === 0 && <p className="vazio">Nenhum item.</p>}
 
-          {linhas.map((linha, indice) => {
-            const produto = produtoDaLinha(linha);
-            return (
-              <div className="linha-item" key={linha.chave}>
-                <div className="campo">
-                  <label htmlFor={`produto-${linha.chave}`}>Produto do item {indice + 1}</label>
-                  <select
-                    id={`produto-${linha.chave}`}
-                    value={linha.produtoId}
-                    onChange={(e) => alterarLinha(linha.chave, { produtoId: e.target.value })}
+            {linhas.map((linha, indice) => {
+              const produto = produtoDaLinha(linha);
+              return (
+                <div className="linha-item" key={linha.chave}>
+                  <div className="campo campo-produto">
+                    <label htmlFor={`produto-${linha.chave}`}>Produto do item {indice + 1}</label>
+                    <select
+                      id={`produto-${linha.chave}`}
+                      value={linha.produtoId}
+                      onChange={(e) => alterarLinha(linha.chave, { produtoId: e.target.value })}
+                    >
+                      <option value="">Selecione…</option>
+                      {produtos.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.nome} · {moeda(p.preco)} · estoque {p.estoque}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="campo campo-quantidade">
+                    <label htmlFor={`quantidade-${linha.chave}`}>Quantidade do item {indice + 1}</label>
+                    <input
+                      id={`quantidade-${linha.chave}`}
+                      type="number"
+                      value={linha.quantidade}
+                      onChange={(e) => alterarLinha(linha.chave, { quantidade: e.target.value })}
+                    />
+                  </div>
+                  <span className="subtotal">
+                    {produto ? moeda(produto.preco * (Number(linha.quantidade) || 0)) : '—'}
+                  </span>
+                  <button
+                    type="button"
+                    className="secundario botao-remover"
+                    aria-label={`Remover item ${indice + 1}`}
+                    onClick={() => alterarLinhas(linhas.filter((l) => l.chave !== linha.chave))}
                   >
-                    <option value="">Selecione…</option>
-                    {produtos.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.nome} · {moeda(p.preco)} · estoque {p.estoque}
-                      </option>
-                    ))}
-                  </select>
+                    Remover
+                  </button>
                 </div>
-                <div className="campo">
-                  <label htmlFor={`quantidade-${linha.chave}`}>Quantidade do item {indice + 1}</label>
-                  <input
-                    id={`quantidade-${linha.chave}`}
-                    type="number"
-                    value={linha.quantidade}
-                    onChange={(e) => alterarLinha(linha.chave, { quantidade: e.target.value })}
-                  />
-                </div>
-                <span className="subtotal">
-                  {produto ? moeda(produto.preco * (Number(linha.quantidade) || 0)) : '—'}
-                </span>
-                <button
-                  type="button"
-                  className="secundario"
-                  aria-label={`Remover item ${indice + 1}`}
-                  onClick={() => alterarLinhas(linhas.filter((l) => l.chave !== linha.chave))}
-                >
-                  Remover
-                </button>
-              </div>
-            );
-          })}
+              );
+            })}
 
-          <button type="button" className="secundario" onClick={() => alterarLinhas([...linhas, novaLinha()])}>
-            Adicionar item
-          </button>
-        </fieldset>
+            <button
+              type="button"
+              className="secundario botao-adicionar"
+              onClick={() => alterarLinhas([...linhas, novaLinha()])}
+            >
+              Adicionar item
+            </button>
+          </fieldset>
 
-        <p className="total">
-          Total previsto: <strong>{moeda(totalPrevisto)}</strong>
-        </p>
+          {erro && (
+            <p className="aviso erro" role="alert">
+              {erro}
+            </p>
+          )}
 
-        {erro && (
-          <p className="aviso erro" role="alert">
-            {erro}
-          </p>
-        )}
+          <div className="resumo-pedido">
+            <p className="total">
+              Total previsto: <strong>{moeda(totalPrevisto)}</strong>
+            </p>
 
-        <button type="submit" disabled={enviando}>
-          {enviando ? 'Enviando…' : 'Criar pedido'}
-        </button>
-      </form>
-    </section>
+            <button type="submit" className="botao-criar" disabled={enviando}>
+              {enviando ? 'Enviando…' : 'Criar pedido'}
+            </button>
+          </div>
+        </form>
+        </div>
+      </section>
+    </div>
   );
 }
