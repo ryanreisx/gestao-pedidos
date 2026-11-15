@@ -20,5 +20,6 @@ app.UseStatusCodePages();
 app.MapClientesEndpoints();
 app.MapProdutosEndpoints();
 app.MapPedidosEndpoints();
+app.MapRelatoriosEndpoints();
 
 app.Run();
