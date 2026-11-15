@@ -131,17 +131,25 @@ Pronto quando: `dotnet test` passa contra SQL Server real e `docker compose up` 
 
 ## Etapa 7 — Debug da query (Parte 4)
 
-1. `database/debug/carga-volume.sql`: um único `INSERT ... SELECT` gerando ~200 mil pedidos com
-   itens. Rodado à mão, fora do `db-init`. Com a carga padrão (~30 pedidos) a query não fica
-   lenta e o plano não muda.
-2. Com o MCP: conferir tabelas e índices e rodar a query original e a corrigida.
-3. Comparação antes e depois feita manualmente, com `SET STATISTICS IO` e o plano de execução.
-4. Salvar em `database/debug/ranking-2026.sql` a query original e a corrigida. Pontos a confirmar:
+Feita pelo Claude e revisada pelo autor.
+
+1. `database/debug/carga-volume.sql`: gera 200 mil pedidos com 2 itens cada (um `INSERT ... SELECT`
+   para os pedidos, outro para os itens e um `UPDATE` do `ValorTotal`). Rodado à mão, fora do
+   `db-init`. Com a carga padrão (~30 pedidos) a query não fica lenta e o plano não muda.
+2. Com o MCP: conferir tabelas e índices e rodar a query original e a corrigida, antes e depois
+   da carga de volume.
+3. Comparar antes e depois com `SET STATISTICS IO` (pelo MCP, que devolve as mensagens) e com o
+   plano de execução (`SET SHOWPLAN_TEXT`, por `sqlcmd` no contêiner, porque precisa de um lote
+   só para ele). Sem DMVs.
+4. Medir também a query sem os índices do schema, dentro de uma transação desfeita no fim, para
+   separar o ganho da reescrita do ganho dos índices.
+5. Salvar em `database/debug/ranking-2026.sql` a query original, a corrigida e a alternativa
+   que usa `Pedidos.ValorTotal`. Problemas confirmados:
    - `WHERE` em `p.DataPedido` anula o `LEFT JOIN`;
-   - `YEAR(p.DataPedido)` impede uso de índice → intervalo `>= '2026-01-01' AND < '2027-01-01'`;
+   - `YEAR(p.DataPedido)` impede busca no índice → intervalo `>= '2026-01-01' AND < '2027-01-01'`;
    - `GROUP BY c.Nome` junta clientes homônimos → agrupar por `c.Id, c.Nome`;
    - `ORDER BY Total` crescente → `DESC`.
-5. Escrever a explicação no README.
+6. Escrever a explicação no README.
 
 ## Etapa 8 — Frontend
 
@@ -203,4 +211,5 @@ O que o autor ajustou ou recusou na revisão proposta pelo Claude:
 | Tela de top clientes no front | Recusada: o front fica com listagem e criação; o relatório existe só na API | O enunciado não exige essa tela |
 | Teste de integração com dois POSTs simultâneos pela última unidade | Recusada: sem teste de concorrência; o `UPDATE` condicional e a `CHECK` de estoque continuam | Mais simples; a garantia já está no banco |
 | Domínio acumulando todos os erros do pedido na resposta | Recusada: retorna o primeiro erro encontrado | Mais simples |
+| Etapa 7 com a comparação feita manualmente pelo autor (decisão anterior, acima) | Alterada: a etapa inteira é executada pelo Claude e revisada pelo autor. `STATISTICS IO` pelo MCP, plano de execução por `sqlcmd`; continua sem DMVs | Usar o MCP na investigação e ganhar tempo. O autor revisou o resultado e reproduziu as medições |
 | API publicada na porta 8080 do host | Alterada: porta 5080 no host, 8080 só dentro do contêiner | A 8080 é comum demais; na máquina do autor já estava ocupada por outro projeto |
