@@ -14,6 +14,10 @@ public static class ClientesEndpoints
                 .AsNoTracking()
                 .OrderBy(c => c.Nome).ThenBy(c => c.Id)
                 .Select(c => new ClienteResponse(c.Id, c.Nome, c.Email))
-                .ToListAsync());
+                .ToListAsync())
+            .WithTags("Clientes")
+            .WithSummary("Lista todos os clientes")
+            .WithDescription("Retorna todos os clientes cadastrados em ordem alfabética (id, nome e e-mail).")
+            .Produces<List<ClienteResponse>>(StatusCodes.Status200OK);
     }
 }

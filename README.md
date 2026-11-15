@@ -14,7 +14,7 @@ docker compose up --build
 | Serviço | Porta no host | Endereço / Acesso |
 |---|---|---|
 | Front (React + nginx) | `3000` | http://localhost:3000 |
-| API (.NET 10) | `5080` (`8080` no contêiner) | http://localhost:5080 |
+| API (.NET 10) | `5080` (`8080` no contêiner) | http://localhost:5080 (Swagger em http://localhost:5080/swagger) |
 | SQL Server 2022 | `1433` | `localhost:1433` (`sa` / senha padrão `GestaoPedidos123`, ou variável `SA_PASSWORD`) |
 
 Na subida, o serviço `db-init` espera o healthcheck do SQL Server e executa `database/01-schema.sql` e `database/02-seed.sql`. Os scripts são idempotentes: criam o banco `GestaoPedidos`, as tabelas e os índices, e aplicam a carga inicial (10 clientes, 10 produtos e 30 pedidos) apenas se a tabela `Clientes` estiver vazia.

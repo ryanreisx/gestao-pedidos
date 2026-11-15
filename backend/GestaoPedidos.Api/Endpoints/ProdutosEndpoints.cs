@@ -14,6 +14,10 @@ public static class ProdutosEndpoints
                 .AsNoTracking()
                 .OrderBy(p => p.Nome).ThenBy(p => p.Id)
                 .Select(p => new ProdutoResponse(p.Id, p.Nome, p.Preco, p.Estoque))
-                .ToListAsync());
+                .ToListAsync())
+            .WithTags("Produtos")
+            .WithSummary("Lista todos os produtos")
+            .WithDescription("Retorna todos os produtos em ordem alfabética, com preço unitário e estoque disponível.")
+            .Produces<List<ProdutoResponse>>(StatusCodes.Status200OK);
     }
 }

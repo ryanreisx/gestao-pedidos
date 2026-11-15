@@ -21,8 +21,20 @@ public static class PedidosEndpoints
 {
     public static void MapPedidosEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/pedidos", CriarPedido);
-        app.MapGet("/pedidos", ListarPedidos);
+        app.MapPost("/pedidos", CriarPedido)
+            .WithTags("Pedidos")
+            .WithSummary("Cria um novo pedido")
+            .WithDescription("Cria um pedido para um cliente existente e realiza a baixa de estoque dos itens na mesma transação.")
+            .Produces<PedidoResponse>(StatusCodes.Status201Created)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity);
+
+        app.MapGet("/pedidos", ListarPedidos)
+            .WithTags("Pedidos")
+            .WithSummary("Lista pedidos com filtros e paginação")
+            .WithDescription("Retorna uma página de pedidos ordenada do mais recente para o mais antigo, com filtros opcionais por clienteId e período (dataInicio e dataFim em yyyy-MM-dd, inclusivos em UTC).")
+            .Produces<PaginaDePedidosResponse>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
     private static async Task<IResult> ListarPedidos(

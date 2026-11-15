@@ -12,7 +12,12 @@ public static class RelatoriosEndpoints
 
     public static void MapRelatoriosEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/relatorios/top-clientes", TopClientes);
+        app.MapGet("/relatorios/top-clientes", TopClientes)
+            .WithTags("Relatórios")
+            .WithSummary("Top 5 clientes que mais compraram")
+            .WithDescription("Retorna até 5 clientes com maior valor total de compras no período opcional (dataInicio e dataFim em yyyy-MM-dd, inclusivos em UTC). Em caso de empate no valor, desempata por mais pedidos, nome em ordem alfabética e menor id.")
+            .Produces<List<TopClienteResponse>>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest);
     }
 
     private static async Task<IResult> TopClientes(AppDbContext db, DateOnly? dataInicio, DateOnly? dataFim)
