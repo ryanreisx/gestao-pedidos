@@ -18,7 +18,7 @@ public class PaginacaoTests
     [InlineData(-1)]
     public void Validar_PageMenorQueUm_RetornaErro(int page)
     {
-        Assert.Equal("page deve ser maior ou igual a 1.", Paginacao.Validar(page, 10));
+        Assert.Equal("A página deve ser maior ou igual a 1.", Paginacao.Validar(page, 10));
     }
 
     [Theory]
@@ -27,12 +27,12 @@ public class PaginacaoTests
     [InlineData(51)]
     public void Validar_PageSizeForaDeUmACinquenta_RetornaErro(int pageSize)
     {
-        Assert.Equal("pageSize deve estar entre 1 e 50.", Paginacao.Validar(1, pageSize));
+        Assert.Equal("A quantidade por página deve estar entre 1 e 50.", Paginacao.Validar(1, pageSize));
     }
 
     [Fact]
     public void Validar_PageGrandeDemais_RetornaErro()
     {
-        Assert.Equal("page é grande demais.", Paginacao.Validar(int.MaxValue, 50));
+        Assert.Equal("O número da página é grande demais.", Paginacao.Validar(int.MaxValue, 50));
     }
 }

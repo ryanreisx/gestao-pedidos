@@ -29,7 +29,7 @@ public class PeriodoTests
     [Fact]
     public void Validar_InicioMaiorQueFim_RetornaErro()
     {
-        Assert.Equal("dataInicio não pode ser maior que dataFim.", Periodo.Validar(Dia12, Dia10));
+        Assert.Equal("A data inicial não pode ser maior que a data final.", Periodo.Validar(Dia12, Dia10));
     }
 
     [Fact]

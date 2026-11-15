@@ -7,7 +7,7 @@ public static class Periodo
     public static string? Validar(DateOnly? dataInicio, DateOnly? dataFim)
     {
         if (dataInicio is not null && dataFim is not null && dataInicio > dataFim)
-            return "dataInicio não pode ser maior que dataFim.";
+            return "A data inicial não pode ser maior que a data final.";
 
         return null;
     }

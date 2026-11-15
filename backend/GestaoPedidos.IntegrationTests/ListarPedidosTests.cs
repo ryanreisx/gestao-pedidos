@@ -204,11 +204,11 @@ public class ListarPedidosTests(ApiFixture api)
     // ---- 400 ----
 
     [Theory]
-    [InlineData("page=0", "page deve ser maior ou igual a 1.")]
-    [InlineData("page=-1", "page deve ser maior ou igual a 1.")]
-    [InlineData("pageSize=0", "pageSize deve estar entre 1 e 50.")]
-    [InlineData("pageSize=51", "pageSize deve estar entre 1 e 50.")]
-    [InlineData("dataInicio=2026-03-12&dataFim=2026-03-10", "dataInicio não pode ser maior que dataFim.")]
+    [InlineData("page=0", "A página deve ser maior ou igual a 1.")]
+    [InlineData("page=-1", "A página deve ser maior ou igual a 1.")]
+    [InlineData("pageSize=0", "A quantidade por página deve estar entre 1 e 50.")]
+    [InlineData("pageSize=51", "A quantidade por página deve estar entre 1 e 50.")]
+    [InlineData("dataInicio=2026-03-12&dataFim=2026-03-10", "A data inicial não pode ser maior que a data final.")]
     public async Task ListarPedidos_ParametroForaDaFaixa_Retorna400ComMensagem(string query, string mensagem)
     {
         var resposta = await api.Client.GetAsync($"/pedidos?{query}");

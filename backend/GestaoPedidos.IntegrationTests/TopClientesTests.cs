@@ -155,7 +155,7 @@ public class TopClientesTests(ApiFixture api)
         Assert.Equal(HttpStatusCode.BadRequest, resposta.StatusCode);
         Assert.Equal("application/problem+json", resposta.Content.Headers.ContentType?.MediaType);
         var problema = await resposta.Content.ReadFromJsonAsync<JsonElement>();
-        Assert.Equal("dataInicio não pode ser maior que dataFim.", problema.GetProperty("detail").GetString());
+        Assert.Equal("A data inicial não pode ser maior que a data final.", problema.GetProperty("detail").GetString());
     }
 
     [Theory]

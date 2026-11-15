@@ -59,6 +59,33 @@ export class ErroDaApi extends Error {
   }
 }
 
+const MENSAGENS_AMIGAVEIS: Record<string, string> = {
+  'clienteId é obrigatório.': 'Selecione um cliente.',
+  'dataInicio não pode ser maior que dataFim.': 'A data inicial não pode ser maior que a data final.',
+  'page deve ser maior ou igual a 1.': 'A página deve ser maior ou igual a 1.',
+  'page é grande demais.': 'O número da página é grande demais.',
+  'One or more validation errors occurred.': 'Os dados informados são inválidos. Verifique os campos preenchidos.',
+  'Bad Request': 'Os dados informados são inválidos. Verifique os campos preenchidos.',
+};
+
+function tornarMensagemAmigavel(mensagem: string): string {
+  const direta = MENSAGENS_AMIGAVEIS[mensagem];
+  if (direta) return direta;
+
+  if (/^Cliente \d+ não existe\.$/.test(mensagem)) {
+    return 'O cliente selecionado não foi encontrado.';
+  }
+  if (/^Produto \d+ não existe\.$/.test(mensagem)) {
+    return 'O produto selecionado não foi encontrado.';
+  }
+  const pageSize = mensagem.match(/^pageSize deve estar entre (\d+) e (\d+)\.$/);
+  if (pageSize) {
+    return `A quantidade por página deve estar entre ${pageSize[1]} e ${pageSize[2]}.`;
+  }
+
+  return mensagem;
+}
+
 async function requisitar<T>(caminho: string, opcoes?: RequestInit): Promise<T> {
   let resposta: Response;
   try {
@@ -69,8 +96,8 @@ async function requisitar<T>(caminho: string, opcoes?: RequestInit): Promise<T> 
 
   if (!resposta.ok) {
     const problema = await resposta.json().catch(() => null);
-    const mensagem = problema?.detail ?? problema?.title ?? `Erro ${resposta.status}`;
-    throw new ErroDaApi(resposta.status, mensagem);
+    const bruta = problema?.detail ?? problema?.title ?? `Erro ${resposta.status}`;
+    throw new ErroDaApi(resposta.status, tornarMensagemAmigavel(bruta));
   }
 
   return resposta.json() as Promise<T>;

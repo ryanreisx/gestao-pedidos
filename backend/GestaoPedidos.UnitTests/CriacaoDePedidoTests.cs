@@ -34,7 +34,7 @@ public class CriacaoDePedidoTests
     {
         var erro = CriacaoDePedido.ValidarEntrada(clienteId, [new(2, 3)]);
 
-        Assert.Equal("clienteId é obrigatório.", erro);
+        Assert.Equal("Selecione um cliente.", erro);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class CriacaoDePedidoTests
     {
         var erro = CriacaoDePedido.ValidarEntrada(0, []);
 
-        Assert.Equal("clienteId é obrigatório.", erro);
+        Assert.Equal("Selecione um cliente.", erro);
     }
 
     // ---- Montar (422) ----

@@ -14,7 +14,7 @@ public static class CriacaoDePedido
     public static string? ValidarEntrada(int clienteId, IReadOnlyList<ItemSolicitado>? itens)
     {
         if (clienteId <= 0)
-            return "clienteId é obrigatório.";
+            return "Selecione um cliente.";
 
         if (itens is null || itens.Count == 0)
             return "O pedido precisa ter pelo menos 1 item.";

@@ -106,7 +106,7 @@ public class CriarPedidoTests(ApiFixture api)
 
         var resposta = await Post(new { itens = new[] { new { produtoId = produto.Id, quantidade = 1 } } });
 
-        await AssertProblema(resposta, HttpStatusCode.BadRequest, "clienteId é obrigatório.");
+        await AssertProblema(resposta, HttpStatusCode.BadRequest, "Selecione um cliente.");
     }
 
     [Fact]
