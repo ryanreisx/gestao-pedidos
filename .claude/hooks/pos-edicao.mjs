@@ -53,7 +53,7 @@ if (extensao === '.cs' && caminho.startsWith('backend/') && existsSync(backend))
 if (['.ts', '.tsx'].includes(extensao) && caminho.startsWith('frontend/')) {
   const frontend = join(raiz, 'frontend');
   if (existsSync(join(frontend, 'node_modules'))) {
-    const erro = executar('npx tsc -b', frontend);
+    const erro = executar('npx tsc --noEmit', frontend);
     if (erro) falhar('Checagem de tipos do frontend falhou:', erro);
   }
 }
