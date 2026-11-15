@@ -1,0 +1,19 @@
+using GestaoPedidos.Api.Dados;
+using Microsoft.EntityFrameworkCore;
+
+namespace GestaoPedidos.Api.Endpoints;
+
+public record ClienteResponse(int Id, string Nome, string Email);
+
+public static class ClientesEndpoints
+{
+    public static void MapClientesEndpoints(this IEndpointRouteBuilder app)
+    {
+        app.MapGet("/clientes", async (AppDbContext db) =>
+            await db.Clientes
+                .AsNoTracking()
+                .OrderBy(c => c.Nome).ThenBy(c => c.Id)
+                .Select(c => new ClienteResponse(c.Id, c.Nome, c.Email))
+                .ToListAsync());
+    }
+}
