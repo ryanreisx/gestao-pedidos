@@ -65,8 +65,16 @@ Retorna a página e o total de registros, do mais recente para o mais antigo:
 Parâmetros opcionais: dataInicio, dataFim (sem período, considera todos os pedidos)
 
 Retorna até 5 clientes com id, nome, valor total e quantidade de pedidos, do maior para o menor valor.
-Em caso de empate no valor, vem primeiro quem tem mais pedidos e, depois, por ordem alfabética do nome.
+Em caso de empate no valor, vem primeiro quem tem mais pedidos; depois, por ordem alfabética do nome;
+e, se ainda houver empate (clientes com o mesmo nome), pelo menor id.
 Clientes sem pedido no período não aparecem.
+
+```json
+[
+  { "clienteId": 1, "nome": "Maria Silva", "valorTotal": 3944.80, "quantidadePedidos": 3 },
+  { "clienteId": 2, "nome": "João Santos", "valorTotal": 3714.00, "quantidadePedidos": 3 }
+]
+```
 
 - 400: data em formato inválido ou dataInicio maior que dataFim
 
