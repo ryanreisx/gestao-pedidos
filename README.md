@@ -49,6 +49,8 @@ Para rodar unitários e integração juntos:
 dotnet test backend
 ```
 
+Os testes e o build do frontend também rodam automaticamente no GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) a cada push e pull request.
+
 ### E2E com Playwright
 
 A Etapa 11 (opcional em [docs/plan.md](docs/plan.md)) previa um teste E2E cobrindo a criação de pedido e a listagem. Não criei uma suíte de código com `@playwright/test` no repositório; em vez disso, rodei a verificação E2E no navegador pelo Claude usando o MCP do Playwright (`@playwright/mcp` configurado em `.mcp.json`) contra o ambiente no ar (`docker compose up` em `http://localhost:3000`), abrindo a tela de novo pedido, preenchendo cliente e itens, enviando o formulário e conferindo o pedido criado na listagem.
